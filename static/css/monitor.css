@@ -1,0 +1,44 @@
+@font-face {
+    font-family: IntroRust;
+    src: url('/static/font/IntroRust-Base.otf');
+}
+
+body {
+    background-color: white;
+    background-image: url('/static/img/pattern.png');
+    overflow: hidden;
+}
+.header {
+    font-family: IntroRust;
+    color: #f8b82b;
+    text-shadow: 3px 3px 0 white, 6px 6px 0 black;
+    font-size: 72px;
+}
+
+.order-number {
+    font-family: IntroRust;
+    font-size: 120px;
+    font-weight: 900;
+    color: black;
+    margin:0;
+    padding: 0;
+}
+
+.order-number-wrap:nth-child(odd) .order-number{
+    text-align: right;
+    padding-right: 50px;
+}
+
+.order-number-wrap:nth-child(even) .order-number{
+    text-align: left;
+    padding-left: 50px;
+}
+
+.guy-wrap{
+    height: 100vh;
+    background-image: url('/static/img/guy.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: bottom;
+}
+

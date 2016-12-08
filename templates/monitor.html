@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Электронная очередь</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="static/css/monitor.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.5.1/socket.io.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+
+    function getParameterByName(name, url) {
+        if (!url) {
+          url = window.location.href;
+        }
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+$(document).ready(function(){
+
+	var socket=io.connect('http://192.168.0.165:8080');
+    var filial = getParameterByName('filial');
+
+	socket.on('connect', function(){
+		console.log('user has connected');
+	});
+
+	socket.on('message', function(msg){
+        var getmsg = JSON.parse(msg);
+        a=getmsg['text'];
+	});
+
+	socket.on('delete', function(post_id){
+		var getdel = JSON.parse(post_id);
+        filialJson=getdel['filial'];
+        if(filial===filialJson){
+        location.reload(true);
+    }
+	});
+    socket.on('sound', function(sound_msg){
+        if(filial===sound_msg){
+            var audio = document.getElementById('audio');
+            audio.play();
+            // var audio = new Audio('../static/audio/simpsons.mp3');
+            // audio.play();
+            if($('.order-number').length > 0){
+                $('#messages').prepend('<div id="orders" class="col-md-6 text-center order-number-wrap" style="padding-top: 10px;"><h4 class="order-number">'+a+'</h4> </div>');
+            }
+            else{
+                $('#messages').append('<div id="orders" class="col-md-6 text-center order-number-wrap" style="padding-top: 10px;"><h4 class="order-number">'+a+'</h4> </div>');
+            }
+        }
+    });
+});
+
+
+
+</script>
+<audio id="audio">
+
+     <source src="../static/audio/simpsons.aac" type="audio/mpeg" />
+    <source src="../static/audio/simpsons.ogg" type="audio/ogg" />
+
+</audio>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-10 text-center">
+            <h1 class="header"><strong>ГОТОВЫЕ ЗАКАЗЫ</strong></h1>
+            <div id="messages" class="row">
+                {% for order in orders %}
+                <div class="col-md-6 text-center order-number-wrap" style="padding-top: 10px;">
+                    <h4 class="order-number">{{order.text}}</h4>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-2 guy-wrap">
+        </div>
+    </div>
+</div>
+</body>
+</html>
